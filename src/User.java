@@ -65,6 +65,16 @@ public class User {
         return user;
     }
 
+    public static void showMyBooks() throws SQLException {
+        Connection connection = DatabaseConnector.connect();
+        Statement statement = connection.createStatement();
+        ResultSet resultset = statement.executeQuery("SELECT  book_res.id, books.book_name, book_res.date_of_receipt, book_res.date_of_delivary FROM `book_res` INNER JOIN books ON book_res.book_id = books.id WHERE `user_id` = 3");
+
+        while(resultset.next()){
+            System.out.println("%d) %s, %s - %s".formatted(Integer.parseInt(resultset.getString("id")), resultset.getString("book_name"), resultset.getString("date_of_receipt"), resultset.getString("date_of_delivary")));
+        }
+    }
+
     public String toString(){
         return USERNAME;
     }

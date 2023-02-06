@@ -62,6 +62,9 @@ public class Main {
                 case 1 -> {
                     Library.showAllBooks();
                 }
+                case 2 -> {
+                    currentUser.showMyBooks();
+                }
             }
         }
 

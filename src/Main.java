@@ -8,21 +8,21 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Connection connect = DatabaseConnector.connect();
         System.out.println(DatabaseConnector.isConnected());
-        Statement statement = connect.createStatement();
-        ResultSet resultset = statement.executeQuery("SELECT * FROM `users`");
-        while (resultset.next()){
-            System.out.println(resultset.getString("name"));
+        if(currentUser != null){
+            mainInterface();
+        }else{
+            loginInterface();
         }
-        loginInterface();
+
     }
 
     public static void loginInterface() throws SQLException {
         showAuthMenu();
         Scanner userOption = new Scanner(System.in);
         System.out.print("Select option: ");
-        switch(userOption.nextInt()){
-            case 1:
-                while(currentUser == null){
+        switch (userOption.nextInt()) {
+            case 1 -> {
+                while (currentUser == null) {
                     System.out.print("Enter username: ");
                     String username = userOption.next();
                     System.out.print("Enter password: ");
@@ -31,7 +31,8 @@ public class Main {
                     System.out.println(User.isLogged() ? User.getNAME() : "");
                 }
                 mainInterface();
-            case 2:
+            }
+            case 2 -> {
                 System.out.print("Enter your name: ");
                 String name = userOption.next();
                 System.out.print("Enter your lastname: ");
@@ -44,15 +45,26 @@ public class Main {
                 String password2 = userOption.next();
                 System.out.print("Enter your date of birth (YYYY-MM-DD): ");
                 String DOB = userOption.next();
-                currentUser = User.register(name, lastname,username, password1, password2, DOB);
+                currentUser = User.register(name, lastname, username, password1, password2, DOB);
                 mainInterface();
+            }
+
         }
     }
-    public static void mainInterface(){
+    public static void mainInterface() throws SQLException {
         showMainMenu();
         Scanner userOption = new Scanner(System.in);
-        switch (userOption.nextInt()){
+        int userInput = 0;
+        while(userInput != 5){
+            System.out.print("Choose option: ");
+            userInput = userOption.nextInt();
+            switch (userInput){
+                case 1 -> {
+                    Library.showAllBooks();
+                }
+            }
         }
+
     }
 
     public static void showAuthMenu(){
@@ -73,7 +85,7 @@ public class Main {
         mainMenu.add("Log out");
         int c = 1;
         for(String menuElem : mainMenu){
-            System.out.println("%d) %s".formatted(c++, menuElem));
+            System.out.printf("%d) %s%n", c++, menuElem);
         }
     }
 }

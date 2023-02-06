@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class User {
     //TODO:
@@ -12,13 +13,15 @@ public class User {
     //2) Check for isLoggedIn
     //3)    \
 
+    private static int ID;
     private static String NAME;
     private static String LASTNAME;
     private static String USERNAME;
     private static String DOB;
     private static boolean isLogged = false;
 
-    public User(String name, String lastname, String username, String DOB){
+    public User(int id, String name, String lastname, String username, String DOB){
+        ID = id;
         NAME = name;
         LASTNAME = lastname;
         USERNAME = username;
@@ -33,10 +36,11 @@ public class User {
         ResultSet resultset = statement.executeQuery("SELECT * FROM `users`");
         while(resultset.next()){
             if(Objects.equals(resultset.getString("username"), username) && Objects.equals(resultset.getString("password"), password)){
+                int id = resultset.getInt("id");
                 String name = resultset.getString("name");
                 String lastname = resultset.getString("lastname");
                 String DateOfBirth = resultset.getString("DateOfBirth");
-                user = new User(name, lastname, username, DateOfBirth);
+                user = new User(id, name, lastname, username, DateOfBirth);
             }
         }
         if(user == null){
@@ -65,7 +69,7 @@ public class User {
         return user;
     }
 
-    public static void showMyBooks() throws SQLException {
+    public void showMyBooks() throws SQLException {
         Connection connection = DatabaseConnector.connect();
         Statement statement = connection.createStatement();
         ResultSet resultset = statement.executeQuery("SELECT  book_res.id, books.book_name, book_res.date_of_receipt, book_res.date_of_delivary FROM `book_res` INNER JOIN books ON book_res.book_id = books.id WHERE `user_id` = 3");
@@ -75,8 +79,48 @@ public class User {
         }
     }
 
+    public void pickUpBook() throws SQLException {
+        Scanner input = new Scanner(System.in);
+        boolean isBad = true;
+        Connection connection = DatabaseConnector.connect();
+        Statement statement = connection.createStatement();
+
+        Library.showAllBooks();
+        System.out.print("Choose book and enter its id: ");
+        int bookId = 0;
+        while (isBad) {
+            bookId = input.nextInt();
+            ResultSet resultSet = statement.executeQuery("SELECT `id` FROM books");
+            while (resultSet.next()) {
+                if (resultSet.getInt("id") == bookId) {
+                    isBad = false;
+                }
+            }
+            if(!isBad){
+                break;
+            }
+            System.out.println("No book with such id");
+            System.out.print("Choose book and enter its id: ");
+
+        }
+
+
+        System.out.print("Choose day of acquisition (YYYY-MM-DD): ");
+        String dayOfAcquisition = input.next();
+        System.out.print("Choose the return time (YYYY-MM-DD): ");
+        String dayOfReturn = input.next();
+        int userID = getID();
+
+        statement.executeUpdate("INSERT INTO `book_res`(`id`, `user_id`, `book_id`, `date_of_receipt`, `date_of_delivary`) VALUES (null,'%d','%d','%s','%s')".formatted(userID, bookId, dayOfAcquisition, dayOfReturn));
+        System.out.println("Book added to your list");
+    }
+
     public String toString(){
         return USERNAME;
+    }
+
+    public static int getID() {
+        return ID;
     }
 
     public static String getNAME() {

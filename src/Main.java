@@ -61,9 +61,15 @@ public class Main {
             switch (userInput){
                 case 1 -> {
                     Library.showAllBooks();
+                    showMainMenu();
                 }
                 case 2 -> {
                     currentUser.showMyBooks();
+                    showMainMenu();
+                }
+                case 3 -> {
+                    currentUser.pickUpBook();
+                    showMainMenu();
                 }
             }
         }

@@ -14,6 +14,7 @@ public class Library {
         statement.executeUpdate("INSERT INTO `books`(`id`, `book_name`, `book_author`, `book_ganre`, `book_isbn`) VALUES (null,'%s','%s','%s','%s')".formatted(book.getBookName(), book.getBookAuthor(), book.getBookGenre(), book.getBookISBN()));
         System.out.println("Book Successfully added");
     }
+
     public static void showAllBooks() throws SQLException{
         Connection connection = DatabaseConnector.connect();
         Statement statement = connection.createStatement();

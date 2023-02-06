@@ -8,13 +8,7 @@ public class DatabaseConnector {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "Kz.Sql.23";
 
-    static {
-        try {
-            Class.forName(DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public static Connection getConnection() {
         Connection connection = null;

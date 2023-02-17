@@ -3,9 +3,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class User {
     //TODO:
@@ -109,11 +112,21 @@ public class User {
 
         }
 
-
-        System.out.print("Choose day of acquisition (YYYY-MM-DD): ");
-        String dayOfAcquisition = input.next();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.print("Choose day of acquisition (YYYY-MM-DD): " + dtf.format(now) + "\n");
+        String dayOfAcquisitionStr = dtf.format(now);
+        LocalDate dayOfAcquisition = LocalDate.parse(dayOfAcquisitionStr, dtf);
         System.out.print("Choose the return time (YYYY-MM-DD): ");
-        String dayOfReturn = input.next();
+        String dayOfReturnStr = input.next();
+        LocalDate dayOfReturn = LocalDate.parse(dayOfReturnStr, dtf);
+
+        if (!dayOfReturn.isAfter(dayOfAcquisition)) {
+            System.out.println("Invalid return time, must be after acquisition time");
+            return;
+        }
+
+
         int userID = getID();
 
         statement.executeUpdate("INSERT INTO `book_res`(`id`, `user_id`, `book_id`, `date_of_receipt`, `date_of_delivary`) VALUES (null,'%d','%d','%s','%s')".formatted(userID, bookId, dayOfAcquisition, dayOfReturn));

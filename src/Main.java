@@ -2,7 +2,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
-
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class Main {
     static User currentUser = null;
@@ -23,6 +24,7 @@ public class Main {
             case 1 -> {
                 while (currentUser == null) {
                     System.out.print("Enter username: ");
+                    System.out.println("To go back, enter \"exit\"");
                     String username = userOption.next();
                     if (Objects.equals(username, "exit")){
                         loginInterface();

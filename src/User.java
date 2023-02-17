@@ -45,6 +45,7 @@ public class User {
         }
         if(user == null){
             System.out.println("Invalid username or password!");
+            System.out.println("To go back, enter \"exit\"");
             return null;
         }
         return user;
@@ -72,9 +73,13 @@ public class User {
     public void showMyBooks() throws SQLException {
         Connection connection = DatabaseConnector.connect();
         Statement statement = connection.createStatement();
-        ResultSet resultset = statement.executeQuery("SELECT  book_res.id, books.book_name, book_res.date_of_receipt, book_res.date_of_delivary FROM `book_res` INNER JOIN books ON book_res.book_id = books.id WHERE `user_id` = 3");
+        ResultSet resultset = statement.executeQuery("SELECT  book_res.id, books.book_name, book_res.date_of_receipt, book_res.date_of_delivary FROM `book_res` INNER JOIN books ON book_res.book_id = books.id WHERE `user_id` = %d".formatted(getID()));
 
         while(resultset.next()){
+            if(Objects.equals(resultset.getString("book_name"), null)){
+                System.out.println("No books!");
+                break;
+            }
             System.out.println("%d) %s, %s - %s".formatted(Integer.parseInt(resultset.getString("id")), resultset.getString("book_name"), resultset.getString("date_of_receipt"), resultset.getString("date_of_delivary")));
         }
     }
@@ -115,6 +120,18 @@ public class User {
         System.out.println("Book added to your list");
     }
 
+    public void returnBook() throws SQLException{
+        showMyBooks();
+        Scanner input = new Scanner(System.in);
+        Connection connection = DatabaseConnector.connect();
+        Statement statement = connection.createStatement();
+
+        System.out.print("Enter book from your list that you want to return: ");
+        int bookId = input.nextInt();
+
+        statement.executeUpdate("DELETE FROM `book_res` WHERE id = %d".formatted(bookId));
+        System.out.println("Returned successfully!");
+    }
     public String toString(){
         return USERNAME;
     }

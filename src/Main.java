@@ -1,13 +1,12 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 
 public class Main {
     static User currentUser = null;
     public static void main(String[] args) throws SQLException {
-        Connection connect = DatabaseConnector.connect();
-        System.out.println(DatabaseConnector.isConnected());
         if(currentUser != null){
             mainInterface();
         }else{
@@ -25,6 +24,9 @@ public class Main {
                 while (currentUser == null) {
                     System.out.print("Enter username: ");
                     String username = userOption.next();
+                    if (Objects.equals(username, "exit")){
+                        loginInterface();
+                    }
                     System.out.print("Enter password: ");
                     String password = userOption.next();
                     currentUser = User.logIn(username, password);
@@ -34,7 +36,11 @@ public class Main {
             }
             case 2 -> {
                 System.out.print("Enter your name: ");
+                System.out.println("To go back, enter \"exit\"");
                 String name = userOption.next();
+                if (Objects.equals(name, "exit")){
+                    loginInterface();
+                }
                 System.out.print("Enter your lastname: ");
                 String lastname = userOption.next();
                 System.out.print("Enter your username: ");
@@ -52,24 +58,24 @@ public class Main {
         }
     }
     public static void mainInterface() throws SQLException {
-        showMainMenu();
         Scanner userOption = new Scanner(System.in);
         int userInput = 0;
         while(userInput != 5){
+            showMainMenu();
             System.out.print("Choose option: ");
             userInput = userOption.nextInt();
             switch (userInput){
                 case 1 -> {
                     Library.showAllBooks();
-                    showMainMenu();
                 }
                 case 2 -> {
                     currentUser.showMyBooks();
-                    showMainMenu();
                 }
                 case 3 -> {
                     currentUser.pickUpBook();
-                    showMainMenu();
+                }
+                case 4 -> {
+                    currentUser.returnBook();
                 }
             }
         }
